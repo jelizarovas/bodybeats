@@ -1403,6 +1403,80 @@ progress {
     font-size: 8px;
   }
 }
+
+/* Mobile camera mode keeps the instrument within the first screen and avoids
+   costly live-video blur. The tracking worker keeps its original input size. */
+@media (max-width: 800px), (pointer: coarse) {
+  .topbar {
+    height: 58px;
+    padding: 0 14px;
+  }
+  .brand {
+    font-size: 19px;
+    gap: 9px;
+  }
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .top-actions {
+    gap: 8px;
+  }
+  .top-actions .quiet {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+  main {
+    padding: 18px 12px 0;
+  }
+  .camera-session main {
+    padding-top: 8px;
+  }
+  .camera-session .page-heading {
+    display: none;
+  }
+  .camera-session .studio-grid {
+    gap: 10px;
+  }
+  .camera-session .instrument-panel {
+    border-radius: 10px;
+  }
+  .camera-active .instrument-toolbar,
+  .camera-active .transport {
+    backdrop-filter: none;
+  }
+  .camera-active .instrument-toolbar {
+    min-height: 48px;
+    padding: 7px 9px;
+  }
+  .camera-active .transport {
+    height: 58px;
+    padding: 9px 11px;
+  }
+  .camera-active .stage {
+    min-height: 0;
+  }
+  .camera-session .guide-card {
+    display: none;
+  }
+  .camera-session .side-panel {
+    display: block;
+  }
+  .camera-session .tracking-card {
+    padding: 13px;
+  }
+  .camera-session .tracking-card > p,
+  .camera-session .tracking-card .tracking-stats {
+    display: none;
+  }
+  .camera-session .loop-panel,
+  .camera-session .side-panel,
+  .camera-session .diagnostics,
+  .camera-session .footer {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 240px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *:before,

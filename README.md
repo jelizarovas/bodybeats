@@ -12,6 +12,8 @@ Camera access requires localhost or HTTPS. The first camera startup downloads th
 
 Starting the camera shows the mirrored feed at full brightness with the pads and tracking overlay on top. Desktop controls float over the feed. The image keeps its camera proportions. Hide camera is optional.
 
+On phones, camera mode removes the page heading so the instrument and transport fit near the top of the first screen. The display canvas uses one CSS pixel per rendered pixel, draws at up to 30 FPS, and avoids live-video blur. Camera recognition keeps its separate worker input and can process up to 60 frames per second when the device and model are fast enough.
+
 - **Air drums:** Put the whole hand in frame. Lift above a pad until it says ready, then strike down through the dotted line. Lift again to rearm. A/S/D/F or tapping the pads plays kick/snare/hi-hat/tom.
 - **Melody:** Pinch thumb and index to start a note. Move sideways to change pitch and upward to brighten it. Release the pinch to stop. Alternatively hold A/S/D/F/G/H/J, or hold and drag the stage.
 - **Playing area:** With the camera running, choose Set my playing area. Hold at the upper-left and lower-right limits of your comfortable reach. Either hand, left, or right can be selected.

@@ -54,6 +54,8 @@ let hitCount = 0,
   lastUI = 0,
   frameTimes: number[] = [],
   stale = false;
+const compactVisuals = matchMedia("(max-width: 800px), (pointer: coarse)");
+let lastVisualFrame = -Infinity;
 let state: Recognition = {
   timestamp: 0,
   hands: [],
@@ -132,6 +134,7 @@ function setSessionUI() {
   document
     .querySelector(".instrument-panel")!
     .classList.toggle("camera-active", session === "camera");
+  document.body.classList.toggle("camera-session", session === "camera");
   if (session === "camera") {
     $("stage").style.setProperty(
       "--camera-aspect",
@@ -1141,8 +1144,13 @@ function render(time: number) {
     camera?.configure(settings);
     stale = true;
   }
-  stage.draw(time, audio.waveform());
-  capture.frame();
+  // Camera inference has its own worker clock. Limiting phone display work to
+  // 30 FPS leaves more GPU and thermal headroom for hand tracking.
+  if (!compactVisuals.matches || time - lastVisualFrame >= 1000 / 30) {
+    stage.draw(time, audio.waveform());
+    capture.frame();
+    lastVisualFrame = time;
+  }
   if (time - lastUI > 80) {
     updateRecognitionUI();
     updateTransport();

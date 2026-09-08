@@ -54,7 +54,10 @@ export class Stage {
     this.resize();
   }
   private resize() {
-    const d = Math.min(devicePixelRatio, 2);
+    // A high-DPI camera canvas is expensive on phones and does not improve
+    // recognition, which reads the video independently in the worker.
+    const compact = matchMedia("(max-width: 800px), (pointer: coarse)").matches;
+    const d = Math.min(devicePixelRatio, compact ? 1 : 2);
     this.width = this.canvas.clientWidth;
     this.height = this.canvas.clientHeight;
     this.canvas.width = this.width * d;
@@ -81,20 +84,6 @@ export class Stage {
       w = this.width,
       h = this.height;
     if (!w || !h) return;
-    ctx.fillStyle = "#1c2218";
-    ctx.fillRect(0, 0, w, h);
-    const g = ctx.createRadialGradient(
-      w * 0.73,
-      h * 0.35,
-      0,
-      w * 0.7,
-      h * 0.4,
-      w * 0.6,
-    );
-    g.addColorStop(0, this.instrument === "drums" ? "#354426" : "#332c43");
-    g.addColorStop(1, "#1c2218");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, w, h);
     const cameraVisible = this.showCamera && this.video.readyState >= 2;
     if (cameraVisible) {
       ctx.save();
@@ -103,6 +92,21 @@ export class Stage {
       ctx.scale(-1, 1);
       ctx.drawImage(this.video, 0, 0, w, h);
       ctx.restore();
+    } else {
+      ctx.fillStyle = "#1c2218";
+      ctx.fillRect(0, 0, w, h);
+      const g = ctx.createRadialGradient(
+        w * 0.73,
+        h * 0.35,
+        0,
+        w * 0.7,
+        h * 0.4,
+        w * 0.6,
+      );
+      g.addColorStop(0, this.instrument === "drums" ? "#354426" : "#332c43");
+      g.addColorStop(1, "#1c2218");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
     }
     ctx.strokeStyle = "#8ea46e15";
     for (let r = 50; !cameraVisible && r < Math.max(w, h); r += 48) {
@@ -291,16 +295,16 @@ export class Stage {
     ctx.lineWidth = 2.5;
     ctx.strokeStyle = color;
     ctx.shadowColor = "#000";
-    ctx.shadowBlur = 4;
+    ctx.shadowBlur = w < 800 ? 0 : 4;
+    ctx.beginPath();
     for (const [a, b] of hand.source === "motion" ? [] : LINKS) {
       if (!hand.points[a] || !hand.points[b]) continue;
       const start = playToCamera(hand.points[a], this.bounds),
         end = playToCamera(hand.points[b], this.bounds);
-      ctx.beginPath();
       ctx.moveTo(start.x * w, start.y * h);
       ctx.lineTo(end.x * w, end.y * h);
-      ctx.stroke();
     }
+    ctx.stroke();
     const position = playToCamera(hand, this.bounds),
       x = position.x * w,
       y = position.y * h;

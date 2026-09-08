@@ -183,6 +183,32 @@ try {
     "No hand visible",
   );
   await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(100);
+  const mobile = await page.evaluate(() => {
+    const canvas = document.querySelector("#stage-canvas");
+    const stage = document.querySelector("#stage").getBoundingClientRect();
+    return {
+      canvasWidth: canvas.width,
+      cssWidth: canvas.clientWidth,
+      stageTop: stage.top,
+      stageBottom: stage.bottom,
+      heading: getComputedStyle(document.querySelector(".page-heading"))
+        .display,
+      toolbarBlur: getComputedStyle(
+        document.querySelector(".instrument-toolbar"),
+      ).backdropFilter,
+    };
+  });
+  assert.equal(mobile.heading, "none", "camera should lead the mobile screen");
+  assert.equal(mobile.toolbarBlur, "none", "live video must avoid mobile blur");
+  assert.ok(
+    mobile.canvasWidth <= mobile.cssWidth * 1.1,
+    "mobile display canvas should not use a high-DPI backing store",
+  );
+  assert.ok(
+    mobile.stageTop < 130 && mobile.stageBottom < 430,
+    "camera and transport should fit within the first mobile screen",
+  );
   await page.screenshot({
     path: ".verification/camera-overlay-mobile.png",
     fullPage: true,
@@ -201,7 +227,7 @@ try {
     true,
   );
   assert.deepEqual(errors, []);
-  console.log("PASS no-hand feedback and camera cleanup");
+  console.log("PASS compact mobile camera layout and camera cleanup");
 } catch (error) {
   console.log(
     "CAMERA FAILURE",
