@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#121413" />
+    <meta
+      name="description"
+      content="Play drums and melody with your hands. Build a loop that's entirely yours."
+    />
+    <title>BodyBeats · Your movement. Your music.</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23d8fc71'/%3E%3Cpath d='M12 14v12m8-18v24m8-18v12' stroke='%23121413' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="BodyBeats home"
+        ><span class="brand-icon"><i></i><i></i><i></i></span>BodyBeats<span
+          class="edition"
+          >STUDIO / 03</span
+        ></a
+      >
+      <div class="top-actions">
+        <span class="local-note"><i></i> Everything stays here</span
+        ><button id="help" class="icon-button" aria-label="How to play">
+          ?</button
+        ><button id="stop-session" class="quiet" disabled>End session</button>
+      </div>
+    </header>
+    <main>
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">YOUR MOVEMENT. YOUR MUSIC.</p>
+          <h1>Find your rhythm<span>.</span></h1>
+        </div>
+        <div class="session-tag">
+          <span id="session-state">READY WHEN YOU ARE</span
+          ><span class="session-dot"></span>
+        </div>
+      </div>
+      <div class="studio-grid">
+        <section class="instrument-panel" aria-label="Instrument">
+          <div class="instrument-toolbar">
+            <div class="tabs" role="tablist" aria-label="Instrument">
+              <button
+                id="mode-drums"
+                role="tab"
+                aria-selected="true"
+                aria-controls="stage"
+              >
+                01 <b>Air drums</b></button
+              ><button
+                id="mode-melody"
+                role="tab"
+                aria-selected="false"
+                aria-controls="stage"
+              >
+                02 <b>Melody</b>
+              </button>
+            </div>
+            <button
+              id="camera-view"
+              class="quiet small"
+              aria-pressed="false"
+              disabled
+            >
+              Show camera
+            </button>
+          </div>
+          <div
+            id="stage"
+            class="stage"
+            role="tabpanel"
+            aria-label="Air drums playing area"
+          >
+            <canvas
+              id="stage-canvas"
+              aria-label="Instrument visualization"
+            ></canvas
+            ><video id="camera-video" playsinline muted hidden></video>
+            <div class="stage-caption">
+              <span class="live-dot" id="tracking-dot"></span
+              ><span id="tracking-label">Your stage is quiet</span>
+            </div>
+            <span class="stage-counter"
+              ><b id="hit-count">00</b><span>NOTES PLAYED</span></span
+            >
+            <div class="stage-intro" id="stage-intro">
+              <span class="little-label"
+                >A LITTLE MOVEMENT GOES A LONG WAY</span
+              >
+              <h2>Go on.<br />Make some noise.</h2>
+              <p>Four pads. Your hands. A rhythm only you can make.</p>
+              <div class="start-actions">
+                <button class="primary" id="start-camera">
+                  Start camera <span>↗</span></button
+                ><button class="secondary" id="start-pointer">
+                  Play with keys
+                </button>
+              </div>
+              <small>No camera? Use A S D F, or tap the pads.</small>
+            </div>
+            <div
+              id="pad-controls"
+              class="pad-controls"
+              aria-label="Playable drum pads"
+            >
+              <button data-pad="0" aria-label="Kick drum, A key">
+                <span>A</span></button
+              ><button data-pad="1" aria-label="Snare drum, S key">
+                <span>S</span></button
+              ><button data-pad="2" aria-label="Hi-hat, D key">
+                <span>D</span></button
+              ><button data-pad="3" aria-label="Tom drum, F key">
+                <span>F</span>
+              </button>
+            </div>
+            <div
+              id="melody-control"
+              class="melody-control"
+              hidden
+              aria-label="Melody playing area"
+            >
+              <span
+                >Hold a pointer or pinch to play · move sideways to choose a
+                note</span
+              >
+            </div>
+            <div class="stage-bottom">
+              <span id="stage-instruction"
+                >A note happens when you play it.</span
+              ><button id="fullscreen" class="text-button">Expand ↗</button>
+            </div>
+          </div>
+          <div class="transport">
+            <button
+              id="play"
+              class="play-button"
+              aria-label="Play loops"
+              disabled
+            >
+              ▶
+            </button>
+            <div class="transport-status">
+              <b id="transport-label">Nothing on repeat. Yet.</b
+              ><span id="transport-subtitle"
+                >Play a few notes, then make a loop.</span
+              >
+            </div>
+            <div class="tempo">
+              <label for="tempo">TEMPO</label>
+              <div>
+                <button id="tempo-down" aria-label="Decrease tempo">−</button
+                ><input
+                  id="tempo"
+                  type="number"
+                  min="60"
+                  max="160"
+                  value="108"
+                  aria-label="Tempo in beats per minute"
+                /><button id="tempo-up" aria-label="Increase tempo">+</button>
+              </div>
+            </div>
+            <button
+              id="metronome"
+              class="toggle"
+              aria-pressed="false"
+              title="Metronome"
+            >
+              Click <span></span>
+            </button>
+            <div class="master-volume">
+              <label for="volume">VOLUME</label
+              ><input id="volume" type="range" min="0" max="100" value="70" />
+            </div>
+          </div>
+        </section>
+        <aside class="side-panel">
+          <section class="guide-card">
+            <div class="card-heading">
+              <span class="eyebrow">THE PLAYBOOK</span
+              ><span class="tiny-tag" id="input-tag">CAMERA / KEYS</span>
+            </div>
+            <h2 id="guide-title">Feel the hit.</h2>
+            <p id="guide-copy">
+              Raise your hand above a pad. Bring it down through the dotted line
+              to play.
+            </p>
+            <div class="gesture-illustration" aria-hidden="true">
+              <span class="hand-line">↓</span><i></i
+              ><span class="hit-ripple"></span>
+            </div>
+            <div class="guide-steps" id="guide-steps">
+              <p><span>01</span> Get your whole hand in frame</p>
+              <p><span>02</span> Lift, then strike down</p>
+              <p><span>03</span> Lift again for the next hit</p>
+            </div>
+            <div class="recognition">
+              <span>RECOGNIZED</span><b id="recognized">Waiting for you</b>
+            </div>
+          </section>
+          <section class="tracking-card">
+            <div class="card-heading">
+              <span class="eyebrow">YOUR SPACE</span
+              ><span id="tracking-health" class="health">NOT CONNECTED</span>
+            </div>
+            <p id="tracking-advice">
+              Camera processing runs on this device. Give your hands a little
+              room and light.
+            </p>
+            <div class="tracking-stats">
+              <div><b id="fps">—</b><span>FRAMES / SEC</span></div>
+              <div><b id="latency">—</b><span>TRACKING / MS</span></div>
+            </div>
+            <button id="calibrate" class="secondary wide" disabled>
+              Set my playing area</button
+            ><label class="hand-preference"
+              >Playing hand<select id="preferred-hand">
+                <option value="any">Either hand</option>
+                <option value="Right">Right hand</option>
+                <option value="Left">Left hand</option>
+              </select></label
+            ><button
+              class="text-button"
+              id="diagnostics-toggle"
+              aria-expanded="false"
+            >
+              Recognition lab ↗
+            </button>
+          </section>
+        </aside>
+      </div>
+      <section class="loop-panel" aria-label="Loop station">
+        <div class="loop-heading">
+          <div>
+            <p class="eyebrow">LAYER BY LAYER</p>
+            <h2>A little loop. A whole feeling.</h2>
+          </div>
+          <div class="loop-actions">
+            <span class="loop-length">2 BARS · 8 BEATS</span
+            ><button id="record-layer" class="record-button" disabled>
+              <i></i> Record a layer
+            </button>
+          </div>
+        </div>
+        <div class="loop-ruler">
+          <span id="loop-message">Your first layer starts here</span>
+          <div id="beat-ruler"></div>
+        </div>
+        <div id="tracks" class="tracks"></div>
+        <div class="loop-footer">
+          <span id="save-state">Loops save on this device.</span>
+          <div>
+            <button id="undo" class="text-button" disabled>
+              Undo last layer</button
+            ><button id="export-wav" class="secondary small" disabled>
+              Export audio ↓</button
+            ><button id="capture" class="secondary small" disabled>
+              Record performance
+            </button>
+          </div>
+        </div>
+      </section>
+      <section id="diagnostics" class="diagnostics" hidden>
+        <div>
+          <p class="eyebrow">RECOGNITION LAB</p>
+          <h2>See what your hands are saying.</h2>
+          <p>
+            Record up to 15 seconds of hand landmarks for replay. This is
+            optional and stays in this browser; no camera images or audio are
+            included.
+          </p>
+          <div class="lab-actions">
+            <button id="record-trace" class="secondary" disabled>
+              Record gesture trace</button
+            ><button id="replay-trace" class="secondary" disabled>
+              Replay trace</button
+            ><button id="export-trace" class="secondary" disabled>
+              Export trace</button
+            ><label class="file-button"
+              >Import trace<input
+                id="import-trace"
+                type="file"
+                accept="application/json"
+            /></label>
+          </div>
+          <p id="trace-status">No trace recorded.</p>
+        </div>
+        <pre id="diagnostic-values">Recognition is idle.</pre>
+      </section>
+      <footer class="footer">
+        <span><i></i> MADE BY MOVEMENT</span>
+        <p>No backing track. Every layer is yours.</p>
+        <button id="save-session" class="text-button" disabled>
+          Save project ↓</button
+        ><label class="text-button file-button"
+          >Open project<input
+            id="import-session"
+            type="file"
+            accept="application/json"
+        /></label>
+      </footer>
+    </main>
+    <dialog id="help-dialog">
+      <button class="dialog-close icon-button" aria-label="Close instructions">
+        ×
+      </button>
+      <p class="eyebrow">WELCOME TO YOUR INSTRUMENT</p>
+      <h2>You make the music.</h2>
+      <p>
+        Start the camera or play with your keyboard. Nothing plays
+        automatically.
+      </p>
+      <h3>Air drums</h3>
+      <p>
+        Lift your hand above the dotted line, then strike down into a pad. Lift
+        to rearm. With keys, use A S D F. You can also tap the pads.
+      </p>
+      <h3>Melody</h3>
+      <p>
+        Touch thumb to index finger to hold a note. Move sideways to choose
+        pitch and up to brighten it. Open your fingers to release. With a mouse
+        or touch, hold and drag on the stage. Keys A S D F G H J play the scale.
+      </p>
+      <h3>Your loop</h3>
+      <p>
+        Record a layer gives you four count-in beats, then records eight beats.
+        It repeats automatically. Add up to four layers, mute them individually,
+        and export the mix as a WAV file.
+      </p>
+      <h3>Your space</h3>
+      <p>
+        Set your playing area by holding your hand at two comfortable corners.
+        Calibration and loops save locally. Camera model files download when
+        first needed.
+      </p>
+      <button class="primary dialog-close">Let's play ↗</button>
+    </dialog>
+    <dialog id="calibration-dialog">
+      <p class="eyebrow">MAKE YOURSELF COMFORTABLE</p>
+      <h2 id="calibration-title">Hold at the top left.</h2>
+      <p id="calibration-copy">
+        Place one open hand at the upper-left corner of your comfortable reach.
+        Hold it steady.
+      </p>
+      <progress id="calibration-progress" max="1" value="0"></progress>
+      <p id="calibration-status">Waiting for a steady hand</p>
+      <button id="cancel-calibration" class="secondary">Cancel</button
+      ><button id="reset-calibration" class="text-button">
+        Use full frame
+      </button>
+    </dialog>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
