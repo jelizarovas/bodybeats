@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 const browser = await chromium.launch({
   headless: true,
+  channel: "chromium",
 });
 try {
   const page = await browser.newPage({ acceptDownloads: true });

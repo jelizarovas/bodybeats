@@ -6,6 +6,7 @@ const base =
   process.argv.find((a) => /^https?:/.test(a)) || "http://127.0.0.1:4180";
 const browser = await chromium.launch({
   headless: true,
+  channel: "chromium",
   args: ["--autoplay-policy=no-user-gesture-required"],
 });
 const page = await browser.newPage({

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 const browser = await chromium.launch({
   headless: true,
+  channel: "chromium",
 });
 const base = process.argv[2] || "http://127.0.0.1:4181";
 try {

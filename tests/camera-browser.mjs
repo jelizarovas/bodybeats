@@ -7,6 +7,7 @@ const fixture = await readFile("tests/fixtures/thumb_up.jpg");
 await mkdir(".verification", { recursive: true });
 const browser = await chromium.launch({
   headless: true,
+  channel: "chromium",
 });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1080 } });
 page.setDefaultTimeout(20000);

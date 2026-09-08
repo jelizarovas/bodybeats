@@ -3,6 +3,7 @@ import { mkdir } from "node:fs/promises";
 await mkdir(".verification", { recursive: true });
 const browser = await chromium.launch({
   headless: true,
+  channel: "chromium",
 });
 try {
   const page = await browser.newPage({

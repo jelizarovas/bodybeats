@@ -3,6 +3,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import assert from "node:assert/strict";
 const browser = await chromium.launch({
   headless: true,
+  channel: "chromium",
 });
 const fixture = await readFile("tests/fixtures/thumb_up.jpg");
 const base =
